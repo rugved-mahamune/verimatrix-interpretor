@@ -127,23 +127,35 @@ private:
 };
 
 int main(int argc, char* argv[]) {
-    if (argc == 2) {
+    if (argc == 5) {
+        std::string programArg, streamArg;
+        
+        for (int i = 1; i < argc; i += 2) {
+            std::string flag = argv[i];
+            std::string value = argv[i + 1];
+
+            if (flag == "--program") {
+                programArg = value;
+            } else if (flag == "--stream") {
+                streamArg = value;
+            } else {
+                std::cerr << "Unknown flag: " << flag << std::endl;
+                return 1;
+            }
+        }
+
         try {
             BitStreamInterpreter interpreter;
-            auto program = ">,>,>,>,>,>,>,>,>+<<<<<<<<+[>+]<[<]>>>>>>>>>[+<<<<<<<<[>]+<[+<]>>>>>>>>>>,>,>,>,>,>,>,>,>+<<<<<<<<+[>+]<[<]>>>>>>>>>]<[+<]+<<<<<<<<+[>+]<[<]>>>>>>>>>[+<<<<<<<<[>]+<[+<]>;>;>;>;>;>;>;>;<<<<<<<<+<<<<<<<<+[>+]<[<]>>>>>>>>>]<[+<]";
-            
-            std::string input = argv[1];
-            std::string output = interpreter.interpret(program, input);
-            
+            std::string output = interpreter.interpret(programArg, streamArg);
             std::cout << output << std::endl;
         } catch (const std::exception& e) {
             std::cerr << "Error: " << e.what() << std::endl;
             return 1;
         }
-    }
-    else {
-        std::cerr << "Usage: " << argv[0] << " <input_string>" << std::endl;
+    } else {
+        std::cerr << "Usage: " << argv[0] << " --program <program_code> --stream <input_data>" << std::endl;
         return 1;
     }
+
     return 0;
 }
